@@ -1,0 +1,22 @@
+.cardWord .iconme {
+  display: flex;
+  color: #4986cc;
+  margin-top: 2rem;
+}
+.cardWord .count {
+  margin-top: 0.45rem;
+  margin-left: 0.8rem;
+}
+
+.cardWord h1 {
+  font-size: 2rem;
+}
+.cardWord h4 {
+  color: gray;
+}
+.cardWord h3 {
+  font-style: italic;
+}
+.cardWord span {
+  font-style: italic;
+}
