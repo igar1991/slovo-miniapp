@@ -15,10 +15,10 @@ export const WordInfo = ({ data, notifications, allowNtifications, denyNtificati
 
     const shareButton=()=> {
         bridge.send("VKWebAppShowWallPostBox", {"message": `#СловоДня
-        ${data.word}. 
-        ${data.value} 
-        Узнавай точные значения слов каждый день.👇🏻
-        https://vk.com/app7442230`});
+${data.word}. 
+${data.value} 
+Узнавай точные значения слов каждый день.👇🏻
+https://vk.com/app7442230`});
     }
 
     const updateLike=()=> {
