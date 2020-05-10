@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Epic, Tabbar, TabbarItem, Panel, PanelHeader, Button, Div } from '@vkontakte/vkui';
+import {Button, Div } from '@vkontakte/vkui';
 import Icon24LikeOutline from '@vkontakte/icons/dist/24/like_outline';
 import Icon24Like from '@vkontakte/icons/dist/24/like';
 import Icon28Notifications from '@vkontakte/icons/dist/28/notifications';
@@ -7,11 +7,14 @@ import Icon28NotificationDisableOutline from '@vkontakte/icons/dist/28/notificat
 import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
 import './style.css';
 import bridge from '@vkontakte/vk-bridge';
+import { WordDayService } from '../server';
 
 export const WordInfo = ({ data, notifications, allowNtifications, denyNtifications })=> {
 
-    const [like, setLike] = useState(data.is_likes);
-    const [count, setCount] = useState(data.like);
+    const [like, setLike] = useState(false);
+    const [count, setCount] = useState(data.likes);
+
+    const api = new WordDayService();
 
     const shareButton=()=> {
         bridge.send("VKWebAppShowWallPostBox", {"message": `#СловоДня
@@ -21,14 +24,19 @@ ${data.value}
 https://vk.com/app7442230`});
     }
 
-    const updateLike=()=> {
-        setLike(!like);
-        if(like) {
-            setCount(count-1)
-            bridge.send("VKWebAppStorageSet", {"key": "count", "value": "1"});
-        } else {
-            setCount(count+1)
-        }
+    const likeOn =()=> {
+        api.like(data.id, true).then(data => {
+            console.log(data);
+            setLike(true);
+            setCount(Number(count)+1)
+            })
+    }
+    const likeOff =()=> {
+        api.like(data.id, false).then(data => {
+            console.log(data);
+            setLike(false);
+            setCount(Number(count)-1)
+            })
     }
     
  
@@ -42,9 +50,9 @@ https://vk.com/app7442230`});
                 <div className='iconme'>{
                 like
                 ?
-                <Icon24Like onClick={updateLike} />
+                <Icon24Like onClick={likeOff} />
                 :
-                <Icon24LikeOutline onClick={updateLike} />
+                <Icon24LikeOutline onClick={likeOn} />
                 }
                 <p className="count">{count}</p>
                 </div>

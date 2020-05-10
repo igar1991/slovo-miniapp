@@ -9,7 +9,7 @@ export const TopList = ({ datatop, goPanel })=> {
                 {datatop.map(item=><Cell 
                 key ={item.id} 
                 expandable 
-                description={item.like}
+                description={item.likes}
                 onClick={goPanel} 
                 data-to="top_word" 
                 data-re={item.id} 

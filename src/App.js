@@ -10,8 +10,9 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 import Icon28ListLikeOutline from '@vkontakte/icons/dist/28/list_like_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import { WordInfo } from './panels/WordInfo';
-import { DATA_DAY, DATA_TOP } from './DATA';
+import { DATA_DAY } from './DATA';
 import { TopList } from './panels/TopList';
+import { WordDayService } from './server';
 
 const osName = platform();
 
@@ -21,8 +22,11 @@ const App = () => {
 	const [fetchedUser, setUser] = useState(null);
 	const [updatePopout, setUpdatePopout] = useState(<ScreenSpinner/>)
 	const [popout, setPopout] = useState(null);
-	const [itemId, setItemId] = useState(null);
 	const [notifications, setNotifications] = useState(false);
+	const [dataTop, setDataTop] = useState(null);
+	const [itemWord, setItemWord ] = useState(null)
+
+	const api = new WordDayService();
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -35,7 +39,6 @@ const App = () => {
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			bridge.send("VKWebAppStorageGet", {"keys": ["check"]}).then(data=>{
-				console.log(data)
 				if(data.keys[0].value==='1') {
 					setPopout(null)
 				} else {
@@ -62,6 +65,11 @@ const App = () => {
 			
 		}
 		fetchData();
+		api.getInfo().then(data => {
+			setDataTop(data.data.top);
+			}).catch(error=>setUpdatePopout(null))
+		console.log(dataTop)
+		
 
 	}, []);
 
@@ -69,21 +77,24 @@ const App = () => {
 		setActiveStory(e.currentTarget.dataset.story);
 	};
 	const goPanel = (e) => {
-		setItemId(e.currentTarget.dataset.re);
+		setItemWord(dataTop.find(item=>e.currentTarget.dataset.re===item.id))
 		setActivePanel(e.currentTarget.dataset.to);
+		console.log(itemWord)
 	};
 
 	const goBack = e => {
 		setActivePanel(e.currentTarget.dataset.to);
 	}
 
-	const itemWord = DATA_TOP.find(item=>itemId===item.id);
-
 	const allowNtifications=()=>{
 		bridge.send("VKWebAppAllowNotifications", {})
 		.then(data=> {
 			setUpdatePopout(<ScreenSpinner/>)
-			setNotifications(data.result)
+			api.isNotify().then(data => {
+				setNotifications(data.result)
+				console.log(data);
+				})
+			
 			setUpdatePopout(null)
 		             }
 			)
@@ -134,7 +145,7 @@ const App = () => {
 			<View id="top_like" activePanel={activePanel} popout={updatePopout===null?popout:updatePopout}>
 			  <Panel id="top_like">
 				<PanelHeader>Топ 100 слов</PanelHeader>
-				  <TopList datatop = {DATA_TOP} goPanel={goPanel} />
+				  <TopList datatop = {dataTop} goPanel={goPanel} />
 			  </Panel>
 			  <Panel id="top_word">
 				<PanelHeader left={<PanelHeaderButton onClick={goBack} data-to="top_like">
