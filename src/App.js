@@ -24,7 +24,10 @@ const App = () => {
 	const [popout, setPopout] = useState(null);
 	const [notifications, setNotifications] = useState(false);
 	const [dataTop, setDataTop] = useState(null);
-	const [itemWord, setItemWord ] = useState(null)
+	const [itemWord, setItemWord ] = useState(null);
+	const [wordDay, setwordDay ] = useState({});
+	
+
 
 	const api = new WordDayService();
 
@@ -60,21 +63,36 @@ const App = () => {
 				}
 				
 			})
+			
 			setUser(user);
-			setUpdatePopout(null)
+			
 			
 		}
+		async function wordDayOne() {
+			await api.getInfo().then(data => {
+				setwordDay(data.data.wordDay)
+				setDataTop(data.data.top);
+				}).catch(error=>setUpdatePopout(null))
+				setUpdatePopout(null)
+
+		} 
 		fetchData();
-		api.getInfo().then(data => {
-			setDataTop(data.data.top);
-			}).catch(error=>setUpdatePopout(null))
-		console.log(dataTop)
+		wordDayOne();
 		
 
-	}, []);
+	},[]);
+
+	 const wordD = () => {
+		 api.getInfo().then(data => {
+			setwordDay(data.data.wordDay)
+			setDataTop(data.data.top);
+			}).catch(error=>setUpdatePopout(null))
+			setUpdatePopout(null)
+	}
 
 	const go = e => {
 		setActiveStory(e.currentTarget.dataset.story);
+		wordD()
 	};
 	const goPanel = (e) => {
 		setItemWord(dataTop.find(item=>e.currentTarget.dataset.re===item.id))
@@ -90,7 +108,7 @@ const App = () => {
 		bridge.send("VKWebAppAllowNotifications", {})
 		.then(data=> {
 			setUpdatePopout(<ScreenSpinner/>)
-			api.isNotify().then(data => {
+			api.isNotify(1).then(data => {
 				setNotifications(data.result)
 				console.log(data);
 				})
@@ -114,9 +132,13 @@ const App = () => {
 	const denyNtifications=()=> {
 		bridge.send("VKWebAppDenyNotifications", {})
 		.then(data=>{
-			setUpdatePopout(<ScreenSpinner/>)
-			setNotifications(!data.result)
-			setUpdatePopout(null)
+			api.isNotify(0).then(data => {
+				setUpdatePopout(<ScreenSpinner/>)
+				setNotifications(!data.result)
+				console.log(data);
+				setUpdatePopout(null)
+				})
+						
 		             })
 	}
 
@@ -139,7 +161,7 @@ const App = () => {
 		    <View id="word_day" activePanel="word_day" popout={updatePopout===null?popout:updatePopout}>
 			  <Panel id="word_day">
 			     <PanelHeader>Слово дня</PanelHeader>
-		         <WordInfo data = {DATA_DAY} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />
+		         <WordInfo wordD ={wordD} data = {wordDay} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />
 			  </Panel> 
 			</View>
 			<View id="top_like" activePanel={activePanel} popout={updatePopout===null?popout:updatePopout}>
@@ -151,7 +173,7 @@ const App = () => {
 				<PanelHeader left={<PanelHeaderButton onClick={goBack} data-to="top_like">
 				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
 			</PanelHeaderButton>}>Топ 100 слов</PanelHeader>
-				{itemWord !== null && <WordInfo data = {itemWord} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />}
+				{itemWord !== null && <WordInfo wordD ={wordD} did={true} data = {itemWord} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />}
 			  </Panel>
 			</View>
 	</Epic>

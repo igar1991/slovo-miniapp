@@ -9,12 +9,12 @@ import './style.css';
 import bridge from '@vkontakte/vk-bridge';
 import { WordDayService } from '../server';
 
-export const WordInfo = ({ data, notifications, allowNtifications, denyNtifications })=> {
-
-    const [like, setLike] = useState(false);
-    const [count, setCount] = useState(data.likes);
+export const WordInfo = ({ data, notifications, allowNtifications, denyNtifications, wordD, did })=> {
 
     const api = new WordDayService();
+    const [count, setCount ] = useState(data.likes);
+    const [islike, setIsLike ] = useState(data.is_likes);
+    useEffect(()=>console.log(did))
 
     const shareButton=()=> {
         bridge.send("VKWebAppShowWallPostBox", {"message": `#СловоДня
@@ -25,17 +25,20 @@ https://vk.com/app7442230`});
     }
 
     const likeOn =()=> {
+       
         api.like(data.id, true).then(data => {
-            console.log(data);
-            setLike(true);
+           
             setCount(Number(count)+1)
+            setIsLike(!islike)
+            wordD()
             })
     }
     const likeOff =()=> {
         api.like(data.id, false).then(data => {
-            console.log(data);
-            setLike(false);
+           
             setCount(Number(count)-1)
+            setIsLike(!islike)
+            wordD()
             })
     }
     
@@ -48,13 +51,13 @@ https://vk.com/app7442230`});
 				<h3>{data.value}</h3>
 				<span>{data.example}</span>
                 <div className='iconme'>{
-                like
+                (did?islike:data.is_likes)
                 ?
                 <Icon24Like onClick={likeOff} />
                 :
                 <Icon24LikeOutline onClick={likeOn} />
                 }
-                <p className="count">{count}</p>
+                <p className="count">{did?count:data.likes}</p>
                 </div>
                 {!notifications
                 ?
