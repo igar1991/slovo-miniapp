@@ -116,17 +116,7 @@ const App = () => {
 			setUpdatePopout(null)
 		             }
 			)
-		.catch(error=>setPopout(<Alert
-			actions={[{
-			  title: 'Закрыть',
-			  autoclose: true,
-			  mode: 'cancel'
-			}]}
-			onClose={()=>setPopout(null)}
-		  >
-			<h2>Упс...</h2>
-			<p>Нам нужно ваше разрешение на отправку уведомлений</p>
-		  </Alert>))
+		.catch(error=>setPopout(console.log(error)))
 	}
 
 	const denyNtifications=()=> {

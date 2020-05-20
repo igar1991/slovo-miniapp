@@ -1,15 +1,28 @@
 .cardWord .iconme {
   display: flex;
+  justify-content: start;
+  flex-direction: row;
+  align-items: center;
   color: #4986cc;
   margin-top: 2rem;
 }
 .cardWord .count {
-  margin-top: 0.45rem;
+  margin-left: 0.8rem;
+}
+.todoicon {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 2rem;
+}
+.counttodo {
   margin-left: 0.8rem;
 }
 
 .cardWord h1 {
   font-size: 2rem;
+  
 }
 .cardWord h4 {
   color: gray;
