@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import {View, Epic, Tabbar, TabbarItem, Panel, PanelHeader, Alert, Div } from '@vkontakte/vkui';
+import {View, Epic, Tabbar, TabbarItem, Panel, PanelHeader, Alert } from '@vkontakte/vkui';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
 import { platform, IOS } from '@vkontakte/vkui';
@@ -10,7 +10,6 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 import Icon28ListLikeOutline from '@vkontakte/icons/dist/28/list_like_outline';
 import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import { WordInfo } from './panels/WordInfo';
-import { DATA_DAY } from './DATA';
 import { TopList } from './panels/TopList';
 import { WordDayService } from './server';
 
@@ -22,7 +21,7 @@ const App = () => {
 	const [fetchedUser, setUser] = useState(null);
 	const [updatePopout, setUpdatePopout] = useState(<ScreenSpinner/>)
 	const [popout, setPopout] = useState(null);
-	const [notifications, setNotifications] = useState(false);
+	const [notifications, setNotifications] = useState(null);
 	const [dataTop, setDataTop] = useState(null);
 	const [itemWord, setItemWord ] = useState(null);
 	const [wordDay, setwordDay ] = useState({});
@@ -65,6 +64,15 @@ const App = () => {
 			})
 			
 			setUser(user);
+			let searchParams = new URLSearchParams(window.location.search);
+			for (let p of searchParams) {
+				if(p[0]==="vk_are_notifications_enabled") {
+					setNotifications(p[1])
+				}
+				console.log(p)
+			}
+			
+			
 			
 			
 		}
@@ -109,7 +117,7 @@ const App = () => {
 		.then(data=> {
 			setUpdatePopout(<ScreenSpinner/>)
 			api.isNotify(1).then(data => {
-				setNotifications(data.result)
+				setNotifications(1)
 				console.log(data);
 				})
 			
@@ -124,7 +132,7 @@ const App = () => {
 		.then(data=>{
 			api.isNotify(0).then(data => {
 				setUpdatePopout(<ScreenSpinner/>)
-				setNotifications(!data.result)
+				setNotifications(0)
 				console.log(data);
 				setUpdatePopout(null)
 				})

@@ -59,7 +59,7 @@ https://vk.com/app7442230`});
                 }
                 <p className="count">{did?count:data.likes}</p>
                 </div>
-                {!notifications
+                {notifications==0
                 ?
                 <Button onClick={allowNtifications} size="xl" stretched mode="secondary" style={{ marginBottom: 8 }} after={<Icon28Notifications width={20} />}>Получать слова</Button>
                 :
