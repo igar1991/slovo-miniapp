@@ -44,8 +44,10 @@ export class WordDayService {
         return this.post('like', data);
     }
 
-    isNotify() {
-        return this.post('is-notify');
+    isNotify(isNotify) {
+        const data = new FormData();
+        data.append('isNotify',isNotify);
+        return this.post('is-notify', data);
     }
 }
 
