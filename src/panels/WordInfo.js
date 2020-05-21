@@ -41,6 +41,13 @@ https://vk.com/app7442230`});
             wordD()
             })
     }
+
+    const ButtonN =()=> {
+        if (notifications==0) {
+            return <Button onClick={allowNtifications} size="xl" stretched mode="secondary" style={{ marginBottom: 8 }} after={<Icon28Notifications width={20} />}>Получать слова</Button>
+        }
+        return <Div></Div>
+    }
     
  
 
@@ -59,12 +66,7 @@ https://vk.com/app7442230`});
                 }
                 <p className="count">{did?count:data.likes}</p>
                 </div>
-                {notifications==0
-                ?
-                <Button onClick={allowNtifications} size="xl" stretched mode="secondary" style={{ marginBottom: 8 }} after={<Icon28Notifications width={20} />}>Получать слова</Button>
-                :
-                <Button onClick={denyNtifications} size="xl" stretched mode="destructive" style={{ marginBottom: 8 }} after={<Icon28NotificationDisableOutline width={20} />}>Отключить уведомления</Button>
-                }
+                {notifications==0 && <Button onClick={allowNtifications} size="xl" stretched mode="secondary" style={{ marginBottom: 8 }} after={<Icon28Notifications width={20} />}>Получать слова</Button>}
                 <Button onClick={shareButton} size="xl" stretched mode="commerce" after={<Icon24ShareOutline width={20} />} >Поделиться</Button>
             </Div>    
 		

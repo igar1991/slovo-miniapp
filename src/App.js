@@ -21,7 +21,7 @@ const App = () => {
 	const [fetchedUser, setUser] = useState(null);
 	const [updatePopout, setUpdatePopout] = useState(<ScreenSpinner/>)
 	const [popout, setPopout] = useState(null);
-	const [notifications, setNotifications] = useState(null);
+	const [notifications, setNotifications] = useState(0);
 	const [dataTop, setDataTop] = useState(null);
 	const [itemWord, setItemWord ] = useState(null);
 	const [wordDay, setwordDay ] = useState({});
@@ -31,6 +31,15 @@ const App = () => {
 	const api = new WordDayService();
 
 	useEffect(() => {
+		let searchParams = new URLSearchParams(window.location.search);
+			for (let p of searchParams) {
+				if(p[0]==="vk_are_notifications_enabled") {
+					setNotifications(p[1])
+				}
+				console.log(p)
+			}
+			
+			
 		bridge.subscribe(({ detail: { type, data }}) => {
 			if (type === 'VKWebAppUpdateConfig') {
 				const schemeAttribute = document.createAttribute('scheme');
@@ -64,16 +73,6 @@ const App = () => {
 			})
 			
 			setUser(user);
-			let searchParams = new URLSearchParams(window.location.search);
-			for (let p of searchParams) {
-				if(p[0]==="vk_are_notifications_enabled") {
-					setNotifications(p[1])
-				}
-				console.log(p)
-			}
-			
-			
-			
 			
 		}
 		async function wordDayOne() {
