@@ -10,11 +10,13 @@
   margin-left: 0.8rem;
 }
 .todoicon {
+  width: 6rem;
   display: flex;
   justify-content: center;
   flex-direction: row;
   align-items: center;
-  margin-right: 2rem;
+  
+  
 }
 .counttodo {
   margin-left: 0.8rem;
