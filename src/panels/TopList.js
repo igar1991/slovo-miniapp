@@ -6,11 +6,7 @@ import './style.css';
 
 export const TopList = ({ datatop, goPanel })=> {
 
-    const Test =()=> {
-        return (
-            <Icon24Like/>
-        )
-    }
+
 
     const IconLike =({likes})=> {
         return (

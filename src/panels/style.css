@@ -35,3 +35,12 @@
 .cardWord span {
   font-style: italic;
 }
+
+.tab {
+ display: none;
+}
+
+.count {
+  user-select: none;
+}
+

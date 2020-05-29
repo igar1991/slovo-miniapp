@@ -12,6 +12,8 @@ import Icon28ListAddOutline from '@vkontakte/icons/dist/28/list_add_outline';
 import { WordInfo } from './panels/WordInfo';
 import { TopList } from './panels/TopList';
 import { WordDayService } from './server';
+import './panels/style.css';
+
 
 const osName = platform();
 
@@ -25,18 +27,21 @@ const App = () => {
 	const [dataTop, setDataTop] = useState(null);
 	const [itemWord, setItemWord ] = useState(null);
 	const [wordDay, setwordDay ] = useState({});
+	const [count, setCount ] = useState(null);
+    const [islike, setIsLike ] = useState(null);
 	
 
 
 	const api = new WordDayService();
 
 	useEffect(() => {
+		window.addEventListener('popstate', e=>e.preventDefault() & menu(e));
+		window.history.pushState({panel: 'top_like'}, `top_like`)
 		let searchParams = new URLSearchParams(window.location.search);
 			for (let p of searchParams) {
 				if(p[0]==="vk_are_notifications_enabled") {
 					setNotifications(p[1])
 				}
-				console.log(p)
 			}
 			
 			
@@ -75,17 +80,19 @@ const App = () => {
 			setUser(user);
 			
 		}
-		async function wordDayOne() {
-			await api.getInfo().then(data => {
+		function wordDayOne() {
+			    api.getInfo().then(data => {
 				setwordDay(data.data.wordDay)
-				setDataTop(data.data.top);
-				}).catch(error=>setUpdatePopout(null))
+				setCount(data.data.wordDay.likes)
+				setIsLike(data.data.wordDay.is_likes)
+				setDataTop(data.data.top)
 				setUpdatePopout(null)
+				}).catch(error=>setUpdatePopout(null))
+				
 
 		} 
 		fetchData();
 		wordDayOne();
-		
 
 	},[]);
 
@@ -93,22 +100,41 @@ const App = () => {
 		 api.getInfo().then(data => {
 			setwordDay(data.data.wordDay)
 			setDataTop(data.data.top);
-			}).catch(error=>setUpdatePopout(null))
 			setUpdatePopout(null)
+			}).catch(error=>setUpdatePopout(null))
+			
 	}
 
 	const go = e => {
 		setActiveStory(e.currentTarget.dataset.story);
-		wordD()
+		if(activeStory === 'top_like') {
+			setCount(wordDay.likes);
+		    setIsLike(wordDay.is_likes);
+		}
+		
 	};
 	const goPanel = (e) => {
-		setItemWord(dataTop.find(item=>e.currentTarget.dataset.re===item.id))
+		wordD()
+		const itemW = dataTop.find(item=>e.currentTarget.dataset.re===item.id)
+		setItemWord(itemW);
+		setCount(itemW.likes);
+		setIsLike(itemW.is_likes);
 		setActivePanel(e.currentTarget.dataset.to);
-		console.log(itemWord)
+		
 	};
 
 	const goBack = e => {
 		setActivePanel(e.currentTarget.dataset.to);
+		window.history.pushState({panel: e.currentTarget.dataset.to }, `${e.currentTarget.dataset.to}`)
+	}
+
+	const menu=(e)=> {
+		if(e.state) {
+			setActivePanel(e.state.panel)
+		} else {
+			setActivePanel('top_like')
+			window.history.pushState({panel: 'top_like'}, `top_like`)
+		}
 	}
 
 	const allowNtifications=()=>{
@@ -126,23 +152,26 @@ const App = () => {
 		.catch(error=>setPopout(console.log(error)))
 	}
 
-	const denyNtifications=()=> {
-		bridge.send("VKWebAppDenyNotifications", {})
-		.then(data=>{
-			api.isNotify(0).then(data => {
-				setUpdatePopout(<ScreenSpinner/>)
-				setNotifications(0)
-				console.log(data);
-				setUpdatePopout(null)
-				})
-						
-		             })
+	const likeOn =(id)=> {
+        setCount(Number(count)+1)
+        setIsLike(!islike)
+        api.like(id, true).then(data => {
+            wordD()
+            })
 	}
+	const likeOff =(id)=> {
+		setCount(Number(count)-1)
+		setIsLike(!islike)
+        api.like(id, false).then(data => {
+            wordD()
+            })
+	}
+	
 
 
 	return (
 		<Epic activeStory={activeStory} tabbar={
-			<Tabbar>
+			<Tabbar className={activePanel==="top_word" ? 'tab': ''}>
 			  <TabbarItem
 				onClick={go}
 				selected={activeStory === 'word_day'}
@@ -158,7 +187,7 @@ const App = () => {
 		    <View id="word_day" activePanel="word_day" popout={updatePopout===null?popout:updatePopout}>
 			  <Panel id="word_day">
 			     <PanelHeader>Слово дня</PanelHeader>
-		         <WordInfo wordD ={wordD} data = {wordDay} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />
+		         <WordInfo likeOn = {likeOn} likeOff={likeOff} count={count} islike={islike} data = {wordDay} notifications={notifications} allowNtifications={allowNtifications}  />
 			  </Panel> 
 			</View>
 			<View id="top_like" activePanel={activePanel} popout={updatePopout===null?popout:updatePopout}>
@@ -167,10 +196,10 @@ const App = () => {
 				  <TopList datatop = {dataTop} goPanel={goPanel} />
 			  </Panel>
 			  <Panel id="top_word">
-				<PanelHeader left={<PanelHeaderButton onClick={goBack} data-to="top_like">
+				<PanelHeader left={<PanelHeaderButton onClick={()=>window.history.back()} data-to="top_like">
 				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
 			</PanelHeaderButton>}>Топ 100 слов</PanelHeader>
-				{itemWord !== null && <WordInfo wordD ={wordD} did={true} data = {itemWord} notifications={notifications} allowNtifications={allowNtifications} denyNtifications={denyNtifications} />}
+				{itemWord !== null && <WordInfo likeOn={likeOn} likeOff={likeOff} count={count} islike={islike} data = {itemWord} notifications={notifications} allowNtifications={allowNtifications} />}
 			  </Panel>
 			</View>
 	</Epic>

@@ -5,6 +5,14 @@ import ReactDOM from "react-dom";
 import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 
+bridge.subscribe(({detail: {type, data}}) => {
+  if (type === 'VKWebAppUpdateConfig') {
+  const schemeAttribute = document.createAttribute('scheme');
+  schemeAttribute.value = data.scheme ? data.scheme : 'bright_light';
+  document.body.attributes.setNamedItem(schemeAttribute);
+  //SetScheme(data.scheme);
+  }
+  });
 // Init VK  Mini App
 bridge.send("VKWebAppInit");
 
