@@ -28,6 +28,18 @@ export class WordDayService {
     getInfo() {
         return this.post('get-info');
     }
+    getTop() {
+        return this.post('get-top');
+    }
+
+    getUser(vk_id) {
+        const data = new FormData();
+        data.append('vk_id', vk_id);
+
+        return this.post('get-user',data);
+    }
+
+    
 
     getWordInfo(id) {
         const data = new FormData();
@@ -42,6 +54,13 @@ export class WordDayService {
         data.append('isLike', isLike);
 
         return this.post('like', data);
+    }
+
+    answer(wordId, answerId ) {
+        const data = new FormData();
+        data.append('wordId', wordId);
+        data.append('answerId', answerId);
+        return this.post('answer', data);
     }
 
     isNotify(isNotify) {

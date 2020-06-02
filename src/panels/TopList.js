@@ -17,11 +17,11 @@ export const TopList = ({ datatop, goPanel })=> {
 
     return (
             <Div>
-                {datatop.map(item=><Cell 
+                {datatop!==null&&datatop.map(item=><Cell 
                 key ={item.id} 
                 expandable 
                 onClick={goPanel} 
-                data-to="top_word" 
+                data-to="2" 
                 data-re={item.id} 
                 before={<IconLike likes={item.likes} />}
                 
