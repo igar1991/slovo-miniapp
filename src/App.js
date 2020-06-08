@@ -114,9 +114,6 @@ const App = () => {
 	const go = e => {
 		
 		setActiveStory(e.currentTarget.dataset.story);
-		setActivePanel(e.currentTarget.dataset.story);
-		wordD()
-		window.history.pushState({panel: e.currentTarget.dataset.story}, `${e.currentTarget.dataset.story}`)
 	
 		
 	};
@@ -193,7 +190,7 @@ const App = () => {
 				window.history.pushState({panel: 'word_day' }, `word_day`)
 				setActivePanel(e.state.panel)
 			} else {
-				window.history.pushState({panel: 'top_like' }, `top_like`)
+				window.history.pushState({panel: 'word_day' }, `word_day`)
 				setActivePanel(e.state.panel)
 			}
 			
@@ -233,12 +230,12 @@ const App = () => {
 			  </Panel> 
 			</View>
 			<View id="top_like" activePanel={activePanel} popout={updatePopout===null?popout:updatePopout}>
-			  <Panel id="top_like">
+			  <Panel id="word_day">
 				<PanelHeader>Топ 100 слов</PanelHeader>
 				  {dataTop && <TopList datatop = {dataTop} goPanel={goPanel} />}
 			  </Panel>
 			  <Panel id="2">
-				<PanelHeader left={<PanelHeaderButton onClick={()=>window.history.back()} data-to="top_like">
+				<PanelHeader left={<PanelHeaderButton onClick={()=>window.history.back()} data-to="word_day">
 				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
 			</PanelHeaderButton>}>Топ 100 слов</PanelHeader>
 				{itemWord && <WordInfo popoutWins={popoutWins} wordD = {wordD} data = {itemWord} notifications={notifications} allowNtifications={allowNtifications} />}

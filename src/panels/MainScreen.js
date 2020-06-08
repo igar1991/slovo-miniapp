@@ -19,7 +19,7 @@ export const MainScreen = ({ wordD, data, usersTop, fetchedUser, goPanelwordDay,
                     <Cell
                         before={fetchedUser.photo_200 ? <Avatar src={fetchedUser.photo_200}/> : null}
                         
-                        description='Колличество монет'
+                        description='Количество монет'
                         indicator={<Coin num={count} />}
                     >
                         {`${fetchedUser.first_name} ${fetchedUser.last_name}`}
@@ -39,7 +39,7 @@ export const MainScreen = ({ wordD, data, usersTop, fetchedUser, goPanelwordDay,
                 
                 > 
                     
-,                    {!usersTop && <Spinner size="large" style={{marginTop: 20, marginBottom: 20}}/>}
+                  {!usersTop && <Spinner size="large" style={{marginTop: 20, marginBottom: 20}}/>}
                     {usersTop && usersTop.map((item, i) => {
                         return <Link key={i} href={`https://vk.com/id${item.vk_id}`} target="_blank">
                             <SimpleCell
@@ -49,7 +49,7 @@ export const MainScreen = ({ wordD, data, usersTop, fetchedUser, goPanelwordDay,
                                 />}
                                 indicator={<Coin num={item.correct_count} />}
                                 >
-                                    <Fragment>Вася Иавнов</Fragment>
+                                    <Fragment>{item.first_name} {item.last_name}</Fragment>
                             </SimpleCell>
                         </Link>;
                     })}
